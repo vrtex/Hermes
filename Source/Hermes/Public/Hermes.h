@@ -3,13 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Modules/ModuleManager.h"
 
-class FHermesModule : public IModuleInterface
+DECLARE_LOG_CATEGORY_EXTERN(LogHermes, Log, All)
+
+class HERMES_API FHermesModule : public IModuleInterface
 {
 public:
 
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+
+private:
+	static void CheckHermesStructs(FName OnlyCheckModule);
+	static void AfterModuleChange(FName ModuleName, EModuleChangeReason ModuleChangeReason);
+	static TSet<FName> CheckedModules;
 };

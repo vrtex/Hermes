@@ -21,6 +21,17 @@ public:
 	virtual UScriptStruct* GetScriptStruct() const { return FHermesMessageData::StaticStruct(); }
 };
 
+USTRUCT()
+struct FHermesMessageData_Vector : public FHermesMessageData
+{
+	GENERATED_BODY()
+
+public:
+	virtual UScriptStruct* GetScriptStruct() const override { return FHermesMessageData_Vector::StaticStruct(); }
+
+	FVector DataVector;
+};
+
 // this allows message data to be stored in a BP class
 USTRUCT(BlueprintType)
 struct HERMES_API FHermesMessageDataHandle
@@ -28,6 +39,12 @@ struct HERMES_API FHermesMessageDataHandle
 	GENERATED_BODY()
 
 public:
+
+	FHermesMessageDataHandle() = default;
+	explicit FHermesMessageDataHandle(FHermesMessageData* DataPtr) { (*this) = DataPtr; }
+	FHermesMessageDataHandle& operator=(FHermesMessageData* DataPtr) { Data = TSharedPtr<FHermesMessageData>(DataPtr);  return *this; }
+	FHermesMessageDataHandle& operator=(const TSharedPtr<FHermesMessageData> DataPtr) { Data = DataPtr;  return *this; }
+	
 	bool IsValid() const { return Data.IsValid(); }
 	explicit operator bool() const { return IsValid(); }
 
