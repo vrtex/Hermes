@@ -11,24 +11,26 @@ bool FHermesStructsChecker::Check(FName OnlyFromModule)
 	const UScriptStruct* BaseStruct = FHermesMessageData::StaticStruct();
 	const FString BaseStructName = BaseStruct->GetName();
 	bool bResult = true;
-	
-	for (TObjectIterator<UScriptStruct> StructIter; StructIter; ++StructIter)
+
+	for(TObjectIterator<UScriptStruct> StructIter; StructIter; ++StructIter)
 	{
 		const UStruct* Struct = *StructIter;
-		FString StructPath = Struct->GetPathName();
+		if(Struct == BaseStruct || !Struct->IsChildOf(BaseStruct))
+			continue;
+
 		if(OnlyFromModule != NAME_None)
 		{
+			FString StructPath = Struct->GetPathName();
 			const FString ModulePattern = FString::Join(TArray<FString>{"/", OnlyFromModule.ToString(), "."}, TEXT(""));
 			if(!StructPath.Contains(ModulePattern))
 				continue;
 		}
-		if(Struct == BaseStruct || !Struct->IsChildOf(BaseStruct))
-			continue;
 
 		const UScriptStruct* ScriptStruct = nullptr;
 		{
-			TSharedPtr<FHermesMessageData> StructInstance = MakeShareable(static_cast<FHermesMessageData*>(FMemory::Malloc(Struct->GetStructureSize())));
-			Struct->InitializeStruct(StructInstance.Get());
+			FHermesMessageData* StructInstance = static_cast<FHermesMessageData*>(FMemory::Malloc(Struct->GetStructureSize()));
+			ON_SCOPE_EXIT { FMemory::Free(StructInstance); };
+			Struct->InitializeStruct(StructInstance);
 			ScriptStruct = StructInstance->GetScriptStruct();
 		}
 		const bool bStructOk = ScriptStruct == Struct;
