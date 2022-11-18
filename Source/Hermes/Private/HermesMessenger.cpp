@@ -5,6 +5,8 @@
 
 void UHermesMessenger::SendMessage(const FHermesMessage& Message)
 {
+	if(!Message.IsValid())
+		return;
 	
 	const TSharedPtr<FHermesMessageDelegate> DelegatePtr = FindDelegateForMessageTag(Message.MessageTag);
 	if(!DelegatePtr.IsValid())

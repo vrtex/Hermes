@@ -17,10 +17,13 @@ FHermesMessageDataHandle UHermesUtilities::MakeHermesVector(const FVector& Vecto
 	return FHermesMessageDataHandle(VectorData);
 }
 
-bool UHermesUtilities::GetVectorFromMessage(const FHermesMessage& Msg, FVector& Vector)
+bool UHermesUtilities::GetHermesAnimData(const FHermesMessage& Message, FHermesAnimNotifyData& HermesData)
 {
-	const FHermesMessageData_Vector* Data = HermesUtilities::CastHermesData<FHermesMessageData_Vector>(Msg.AdditionalData);
-	if(Data)
-		Vector = Data->DataVector;
-	return Data != nullptr;
+	HERMES_DATA_GETTER_IMPL(FHermesAnimNotifyData)
 }
+
+bool UHermesUtilities::GetHermesVectorData(const FHermesMessage& Message, FHermesMessageData_Vector& HermesData)
+{
+	HERMES_DATA_GETTER_IMPL(FHermesMessageData_Vector)
+}
+

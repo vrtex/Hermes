@@ -21,7 +21,7 @@ public:
 	virtual UScriptStruct* GetScriptStruct() const { return FHermesMessageData::StaticStruct(); }
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FHermesMessageData_Vector : public FHermesMessageData
 {
 	GENERATED_BODY()
@@ -29,6 +29,7 @@ struct FHermesMessageData_Vector : public FHermesMessageData
 public:
 	virtual UScriptStruct* GetScriptStruct() const override { return FHermesMessageData_Vector::StaticStruct(); }
 
+	UPROPERTY(BlueprintReadWrite)
 	FVector DataVector;
 };
 
@@ -70,6 +71,9 @@ struct HERMES_API FHermesMessage
 	FHermesMessage() = default;
 	FHermesMessage(FGameplayTag Tag) :MessageTag(Tag) {}
 
+	// messages that can be sent should always have a tag
+	bool IsValid() const { return MessageTag.IsValid(); }
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag MessageTag;
 
@@ -80,6 +84,9 @@ struct HERMES_API FHermesMessage
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TWeakObjectPtr<UObject> OptionalObject;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 IntData = 0;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Magnitude = 0.f;
 

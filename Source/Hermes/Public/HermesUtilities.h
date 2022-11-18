@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HermesMessage.h"
+#include "Animation/HermesAnimNotifyData.h"
 #include "HermesUtilities.generated.h"
 
 class UHermesMessenger;
@@ -31,6 +32,15 @@ namespace HermesUtilities
 	}
 }
 
+// convenience macro for implementing BP getters for different hermes data types
+// it can be plopped in a static getter with signature: bool(const FHermesMessage& Message, FHermesAnimNotifyData& HermesData) (names must match exactly);
+#define HERMES_DATA_GETTER_IMPL(DataClass) {\
+const DataClass* Data = HermesUtilities::CastHermesData<DataClass>(Message.AdditionalData);\
+if(Data)\
+	HermesData = *Data;\
+return Data != nullptr;\
+};
+
 
 /**
  * 
@@ -40,13 +50,17 @@ class HERMES_API UHermesUtilities : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
+public:
 	UFUNCTION(BlueprintPure)
 	static UHermesMessenger* GetHermesMessenger(const UObject* RelayObject);
 
 	UFUNCTION(BlueprintPure)
 	static FHermesMessageDataHandle MakeHermesVector(const FVector& Vector);
-
-	UFUNCTION(BlueprintCallable)
-	static bool GetVectorFromMessage(const FHermesMessage& Msg, FVector& Vector);
 	
+	UFUNCTION(BlueprintPure)
+	static bool GetHermesAnimData(const FHermesMessage& Message, FHermesAnimNotifyData& HermesData);
+
+	UFUNCTION(BlueprintPure)
+	static bool GetHermesVectorData(const FHermesMessage& Message, FHermesMessageData_Vector& HermesData);
+
 };
