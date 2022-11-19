@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HermesMessage.h"
+#include "HermesMessenger.h"
 #include "Animation/HermesAnimNotifyData.h"
 #include "HermesUtilities.generated.h"
 
@@ -61,6 +62,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static bool IsHermesMessageValid(const FHermesMessage& Message) { return Message.IsValid(); }
+
+	UFUNCTION(BlueprintPure)
+	static bool IsHermesEventBound(const FHermesEventHandle& EventHandle) { return EventHandle.IsValid(); }
 
 	UFUNCTION(BlueprintPure)
 	static FHermesMessageDataHandle MakeHermesVector(const FVector& Vector);

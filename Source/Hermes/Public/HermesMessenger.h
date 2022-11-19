@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HermesMessage.h"
+#include "HermesTypes.h"
 #include "UObject/Object.h"
 #include "HermesMessenger.generated.h"
 
@@ -11,19 +12,6 @@
 DECLARE_MULTICAST_DELEGATE_TwoParams(FHermesMessageDelegate, UHermesMessenger* Messenger, const FHermesMessage* Message);
 DECLARE_DYNAMIC_DELEGATE_TwoParams(FHermesMessageDynamicDelegate, UHermesMessenger*, Messenger, const FHermesMessage&, Message);
 
-USTRUCT(BlueprintType)
-struct FHermesEventHandle
-{
-	GENERATED_BODY()
-	friend class UHermesMessenger;
-
-	FHermesEventHandle() = default;
-
-private:
-	TWeakObjectPtr<UHermesMessenger> OwningMessenger;
-	FGameplayTag Tag;
-	FDelegateHandle Handle;
-};
 
 /**
  * 
@@ -34,6 +22,8 @@ class HERMES_API UHermesMessenger : public UObject
 	GENERATED_BODY()
 
 public:
+
+	UHermesMessenger();
 
 	UFUNCTION(BlueprintCallable)
 	FHermesMessage SendMessage(const FHermesMessage& Message);
@@ -49,15 +39,22 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UnbindHermesEvent(UPARAM(ref) FHermesEventHandle& EventHandle);
 
+	UFUNCTION(BlueprintCallable)
+	void SetMessengerInfo(const FHermesMessengerInfo& NewInfo);
+	
+	UFUNCTION(BlueprintPure)
+	const FHermesMessengerInfo& GetMessengerInfo() const;
+
 private:
 
 	// this differ from GetDelegateForMessageTag: if delegate isn't present it won't get created
 	TSharedPtr<FHermesMessageDelegate> FindDelegateForMessageTag(const FGameplayTag& Tag);
 
-
 	void BlueprintMessageCallback(UHermesMessenger* Messenger, const FHermesMessage* Message, FHermesMessageDynamicDelegate Delegate);
 
 	TMap<FGameplayTag, TSharedPtr<FHermesMessageDelegate>> BoundDelegates;
+
+	FHermesMessengerInfo MessengerInfo;
 
 };
 

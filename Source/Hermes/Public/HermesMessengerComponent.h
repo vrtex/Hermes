@@ -15,8 +15,18 @@ class HERMES_API UHermesMessengerComponent : public UActorComponent, public IHer
 
 	UHermesMessengerComponent();
 
+	virtual void OnRegister() override;
+
 public:
 	virtual UHermesMessenger* GetHermesMessenger_Implementation() const override { return Messenger; }
+
+protected:
+
+	virtual UHermesMessenger* CreateMessengerObject();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UHermesMessenger> MessengerClass;
+	
 private:
 
 	UPROPERTY()

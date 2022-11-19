@@ -87,6 +87,9 @@ struct HERMES_API FHermesMessage
 	TWeakObjectPtr<UObject> OptionalObject;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bBoolData = false;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 IntData = 0;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

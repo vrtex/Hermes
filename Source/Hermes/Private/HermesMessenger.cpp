@@ -3,6 +3,11 @@
 
 #include "HermesMessenger.h"
 
+UHermesMessenger::UHermesMessenger()
+{
+	MessengerInfo.Self = this;
+}
+
 FHermesMessage UHermesMessenger::SendMessage(const FHermesMessage& Message)
 {
 	if(!Message.IsValid())
@@ -72,6 +77,20 @@ void UHermesMessenger::UnbindHermesEvent(FHermesEventHandle& EventHandle)
 	DelegatePtr->Remove(DelegateHandle);
 	if(!DelegatePtr->IsBound())
 		BoundDelegates.Remove(Tag);
+}
+
+void UHermesMessenger::SetMessengerInfo(const FHermesMessengerInfo& NewInfo)
+{
+	MessengerInfo = NewInfo;
+	
+	// make sure nothing sets Self to anything else
+	if(MessengerInfo.Self != this)
+		MessengerInfo.Self = this;
+}
+
+const FHermesMessengerInfo& UHermesMessenger::GetMessengerInfo() const
+{
+	return MessengerInfo;
 }
 
 TSharedPtr<FHermesMessageDelegate> UHermesMessenger::FindDelegateForMessageTag(const FGameplayTag& Tag)
