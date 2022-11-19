@@ -71,6 +71,8 @@ struct HERMES_API FHermesMessage
 	FHermesMessage() = default;
 	FHermesMessage(FGameplayTag Tag) :MessageTag(Tag) {}
 
+	static FHermesMessage EmptyMessage;
+
 	// messages that can be sent should always have a tag
 	bool IsValid() const { return MessageTag.IsValid(); }
 

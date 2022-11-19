@@ -54,6 +54,14 @@ public:
 	UFUNCTION(BlueprintPure)
 	static UHermesMessenger* GetHermesMessenger(const UObject* RelayObject);
 
+	// safe to call for any object as RelayObject
+	// won't do anything it provided object doesn't have a messenger
+	UFUNCTION(BlueprintCallable)
+	static bool SendHermesMessage(const UObject* RelayObject, const FHermesMessage& Message, FHermesMessage& ResponseMessage);
+
+	UFUNCTION(BlueprintPure)
+	static bool IsHermesMessageValid(const FHermesMessage& Message) { return Message.IsValid(); }
+
 	UFUNCTION(BlueprintPure)
 	static FHermesMessageDataHandle MakeHermesVector(const FVector& Vector);
 	

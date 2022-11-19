@@ -3,18 +3,28 @@
 
 #include "HermesMessenger.h"
 
-void UHermesMessenger::SendMessage(const FHermesMessage& Message)
+FHermesMessage UHermesMessenger::SendMessage(const FHermesMessage& Message)
 {
 	if(!Message.IsValid())
-		return;
+		return FHermesMessage::EmptyMessage;
 	
 	const TSharedPtr<FHermesMessageDelegate> DelegatePtr = FindDelegateForMessageTag(Message.MessageTag);
 	if(!DelegatePtr.IsValid())
-		return;
+		return FHermesMessage::EmptyMessage;
 
+	const FHermesMessage Response = RespondToMessage(Message);
+	
 	// broadcasting the message might cause the delegate to be moved or removed, pin it locally
 	const FHermesMessageDelegate* MulticastDelegate = DelegatePtr.Get();
 	MulticastDelegate->Broadcast(this, &Message);
+
+	return Response;
+}
+
+FHermesMessage UHermesMessenger::RespondToMessage_Implementation(const FHermesMessage& IncomingMessage)
+{
+	// this can be overriden to react to message without having to bind event to a delegate
+	return FHermesMessage::EmptyMessage;
 }
 
 FHermesMessageDelegate& UHermesMessenger::GetDelegateForMessageTag(const FGameplayTag& Tag)

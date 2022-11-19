@@ -2,3 +2,5 @@
 
 
 #include "HermesMessage.h"
+
+FHermesMessage FHermesMessage::EmptyMessage = FHermesMessage(FGameplayTag::EmptyTag);

@@ -3,11 +3,20 @@
 
 #include "HermesUtilities.h"
 
+#include "HermesMessenger.h"
 #include "HermesMessengerInterface.h"
 
 UHermesMessenger* UHermesUtilities::GetHermesMessenger(const UObject* RelayObject)
 {
 	return RelayObject && RelayObject->Implements<UHermesMessengerInterface>() ? IHermesMessengerInterface::Execute_GetHermesMessenger(RelayObject) : nullptr;
+}
+
+bool UHermesUtilities::SendHermesMessage(const UObject* RelayObject, const FHermesMessage& Message, FHermesMessage& ResponseMessage)
+{
+	UHermesMessenger* HermesMessenger = GetHermesMessenger(RelayObject);
+	if(HermesMessenger)
+		ResponseMessage = HermesMessenger->SendMessage(Message);
+	return HermesMessenger != nullptr;
 }
 
 FHermesMessageDataHandle UHermesUtilities::MakeHermesVector(const FVector& Vector)

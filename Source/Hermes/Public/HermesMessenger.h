@@ -28,7 +28,7 @@ private:
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class HERMES_API UHermesMessenger : public UObject
 {
 	GENERATED_BODY()
@@ -36,7 +36,10 @@ class HERMES_API UHermesMessenger : public UObject
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void SendMessage(const FHermesMessage& Message);
+	FHermesMessage SendMessage(const FHermesMessage& Message);
+
+	UFUNCTION(BlueprintNativeEvent)
+	FHermesMessage RespondToMessage(const FHermesMessage& IncomingMessage);
 	
 	FHermesMessageDelegate& GetDelegateForMessageTag(const FGameplayTag& Tag);
 
