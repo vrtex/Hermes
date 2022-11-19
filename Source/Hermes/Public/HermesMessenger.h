@@ -33,6 +33,7 @@ public:
 	
 	FHermesMessageDelegate& GetDelegateForMessageTag(const FGameplayTag& Tag);
 
+	// events bound to empty tag will receive any message
 	UFUNCTION(BlueprintCallable)
 	FHermesEventHandle BindHermesEvent(const FGameplayTag& MessageTag, const FHermesMessageDynamicDelegate& Delegate);
 

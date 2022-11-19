@@ -13,15 +13,16 @@ FHermesMessage UHermesMessenger::SendMessage(const FHermesMessage& Message)
 	if(!Message.IsValid())
 		return FHermesMessage::EmptyMessage;
 	
-	const TSharedPtr<FHermesMessageDelegate> DelegatePtr = FindDelegateForMessageTag(Message.MessageTag);
-	if(!DelegatePtr.IsValid())
-		return FHermesMessage::EmptyMessage;
-
 	const FHermesMessage Response = RespondToMessage(Message);
-	
-	// broadcasting the message might cause the delegate to be moved or removed, pin it locally
-	const FHermesMessageDelegate* MulticastDelegate = DelegatePtr.Get();
-	MulticastDelegate->Broadcast(this, &Message);
+
+	const TArray Delegates{FindDelegateForMessageTag(Message.MessageTag), FindDelegateForMessageTag(FGameplayTag::EmptyTag)};
+	for(auto Delegate : Delegates)
+	{
+		if(!Delegate.IsValid())
+			continue;
+		const FHermesMessageDelegate* DelegatePtr = Delegate.Get();
+		DelegatePtr->Broadcast(this, &Message);
+	}
 
 	return Response;
 }
