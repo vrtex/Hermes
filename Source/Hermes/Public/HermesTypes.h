@@ -35,5 +35,6 @@ struct FHermesEventHandle
 private:
 	TWeakObjectPtr<UHermesMessenger> OwningMessenger;
 	FGameplayTag Tag;
+	bool bExactTag = true;
 	FDelegateHandle Handle;
 };

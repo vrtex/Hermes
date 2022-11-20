@@ -31,11 +31,11 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	FHermesMessage RespondToMessage(const FHermesMessage& IncomingMessage);
 	
-	FHermesMessageDelegate& GetDelegateForMessageTag(const FGameplayTag& Tag);
+	FHermesMessageDelegate& GetDelegateForMessageTag(const FGameplayTag& Tag, bool bExactTag = true);
 
 	// events bound to empty tag will receive any message
 	UFUNCTION(BlueprintCallable)
-	FHermesEventHandle BindHermesEvent(const FGameplayTag& MessageTag, const FHermesMessageDynamicDelegate& Delegate);
+	FHermesEventHandle BindHermesEvent(const FGameplayTag& MessageTag, const FHermesMessageDynamicDelegate& Delegate, bool bExactTag = true);
 
 	UFUNCTION(BlueprintCallable)
 	void UnbindHermesEvent(UPARAM(ref) FHermesEventHandle& EventHandle);
@@ -48,12 +48,12 @@ public:
 
 private:
 
-	// this differ from GetDelegateForMessageTag: if delegate isn't present it won't get created
-	TSharedPtr<FHermesMessageDelegate> FindDelegateForMessageTag(const FGameplayTag& Tag);
+	void BroadcastMessage(const FHermesMessage& Message);
 
 	void BlueprintMessageCallback(UHermesMessenger* Messenger, const FHermesMessage* Message, FHermesMessageDynamicDelegate Delegate);
 
 	TMap<FGameplayTag, TSharedPtr<FHermesMessageDelegate>> BoundDelegates;
+	TMap<FGameplayTag, TSharedPtr<FHermesMessageDelegate>> BoundFilterDelegates;
 
 	FHermesMessengerInfo MessengerInfo;
 
